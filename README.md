@@ -2,7 +2,7 @@
 
 This repository contains various datasets, Jupyter notebooks, and machine learning models that accompany the "Learning Machine Learning" series of blog posts:
 
-- Learning Machine Learning Part 1: Introduction and Revoke-Obfuscation
+- [Learning Machine Learning Part 1: Introduction and Revoke-Obfuscation](https://posts.specterops.io/learning-machine-learning-part-1-introduction-and-revoke-obfuscation-c73033184f0)
 - Learning Machine Learning Part 2: Attacking White Box Models
 - Learning Machine Learning Part 3: Attacking Black Box Models
 
