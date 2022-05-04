@@ -26,10 +26,19 @@ public static class RevokeObfuscationHelpers
         //  a supplied file name, and and returns an ordered dictionary of all features
 
         OrderedDictionary allCheckScriptResults = new OrderedDictionary();
-
+        
         Token[] temp = null;
         ParseError[] temp2 = null;
-        ScriptBlockAst ast = Parser.ParseFile(input, out temp, out temp2);
+        ScriptBlockAst ast = null;
+
+        if (File.Exists(input))
+        {
+            ast = Parser.ParseFile(input, out temp, out temp2);
+        }
+        else
+        {
+            ast = Parser.ParseInput(input, out temp, out temp2);
+        }
 
         var result = ArrayElementMetrics.AnalyzeAst(ast);
         foreach (DictionaryEntry entry in result)

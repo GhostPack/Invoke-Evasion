@@ -10,6 +10,8 @@ using System.Collections.Specialized;
 using Microsoft.VisualBasic.FileIO;
 using PSAST.lib;
 using System.Threading;
+using RGiesecke.DllExport;
+using System.Runtime.InteropServices;
 
 namespace PSAST
 {
@@ -25,9 +27,50 @@ namespace PSAST
             Console.WriteLine("      Generates a AST .csv for a single PowerShell script");
         }
 
+        [DllExport("GetASTFile", CallingConvention = CallingConvention.Cdecl)]
+        public static string GetASTFile(string scriptPath)
+        {
+            if (!File.Exists(scriptPath))
+            {
+                return "";
+            }
+            else
+            {
+                // get the RVO feature vector
+                var vector = RevokeObfuscationHelpers.GetRvoFeatureVector(scriptPath, "1");
+
+                string output = Helpers.GetASTCSVHeader(vector) + "\n";
+
+                scriptPath = scriptPath.Replace('\\', '/'); // for later Linux processing
+                object[] temp = new object[vector.Values.Count];
+                vector.Values.CopyTo(temp, 0);
+
+                output += $"\"{scriptPath}\",{String.Join(",", temp)}";
+
+                return output;
+            }
+        }
+
+        [DllExport("GetAST", CallingConvention = CallingConvention.Cdecl)]
+        public static string GetAST(string inputScript)
+        {
+            // get the RVO feature vector
+            var vector = RevokeObfuscationHelpers.GetRvoFeatureVector(inputScript, "1");
+
+            // add in the header
+            string output = Helpers.GetASTCSVHeader(vector) + "\n";
+
+            object[] temp = new object[vector.Values.Count];
+            vector.Values.CopyTo(temp, 0);
+
+            output += $"\"script\",{String.Join(",", temp)}";
+
+            return output;
+        }
+
+ 
         static void Main(string[] args)
         {
-            
             if(args.Length == 1)
             {
                 var scriptPath = args[0];
